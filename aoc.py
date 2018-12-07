@@ -9,11 +9,20 @@ def parse_args():
 def main( part1, part2 ):
     args = parse_args()
 
-    with open( args.inputfile ) as input:
+    input = readInput( args.inputfile )
 
-        if args.part == 1:
-            output = part1( input )
-            print( output )
-        else:
-            output = part2( input )
-            print( output )
+    if args.part == 1:
+        output = part1( input )
+        print( output )
+    else:
+        output = part2( input )
+        print( output )
+
+def readInput( file ):
+    input = list()
+
+    with open( file ) as f:
+        for line in f:
+            input.append( line.rstrip( '\n' ) )
+
+    return input
