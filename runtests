@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Use -b buffer and -v verbose, etc.
+
+python -m unittest discover "$@"
