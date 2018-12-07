@@ -42,13 +42,5 @@ def part2( input ):
 
 
 if __name__ == "__main__":
-    args = aoc.parse_args()
+    aoc.main( part1, part2 )
 
-    with open( args.inputfile ) as input:
-
-        if args.part == 1:
-            output = part1( input )
-            print( output )
-        else:
-            output = part2( input )
-            print( output )
