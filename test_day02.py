@@ -5,8 +5,6 @@ import day02
 
 class TestDay02( unittest.TestCase ):
 
-    example = ( 1, -2, 3, 1 )
-
     def test_part1_example1( self ):
         input = [
                 'abcdef',
