@@ -1,5 +1,15 @@
 #!/bin/bash
 
-# Use -b buffer and -v verbose, etc.
+# Use -b buffer and -v verbose, etc
 
-python -m unittest discover "$@"
+defaultCommand=discover
+
+for arg in "$@"; do
+	if [[ $arg == test* ]]; then
+		# Assume a test name is given so we don't want to do discover.
+		defaultCommand=
+	fi
+done
+
+python -m unittest $defaultCommand "$@"
+
