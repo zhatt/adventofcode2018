@@ -1,0 +1,18 @@
+#!/bin/bash
+
+args=(
+	--disable=bad-whitespace
+	--disable=missing-docstring
+)
+
+defaultFiles=*
+
+for arg in "$@"; do
+
+	if [[ -r $arg ]]; then
+		# Assume a test name is given so we don't want to do discover.
+		defaultFiles=
+	fi
+done
+
+pylint "${args[@]}" "$@" $defaultFiles
