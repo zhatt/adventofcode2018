@@ -20,7 +20,7 @@ class TestDay02( unittest.TestCase ):
         self.assertEqual( result, 12 )
 
     def test_part1_input( self ):
-        result = day02.part1( aoc.readInput( 'day02.input' ) )
+        result = day02.part1( aoc.read_input( 'day02.input' ) )
         self.assertEqual( result, 5478 )
 
 
@@ -39,7 +39,7 @@ class TestDay02( unittest.TestCase ):
         self.assertEqual( result, 'fgij' )
 
     def test_part2_input( self ):
-        result = day02.part2( aoc.readInput( 'day02.input' ) )
+        result = day02.part2( aoc.read_input( 'day02.input' ) )
         self.assertEqual( result, 'qyzphxoiseldjrntfygvdmanu' )
 
 if __name__ == '__main__':

@@ -3,26 +3,26 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument( '--part', type = int, choices = ( 1, 2 ), default = 1 )
-    parser.add_argument( 'inputfile' )
+    parser.add_argument( 'input_file' )
     return parser.parse_args()
 
 def main( part1, part2 ):
     args = parse_args()
 
-    input = readInput( args.inputfile )
+    input_list = read_input( args.input_file )
 
     if args.part == 1:
-        output = part1( input )
+        output = part1( input_list )
         print( output )
     else:
-        output = part2( input )
+        output = part2( input_list )
         print( output )
 
-def readInput( file ):
-    input = list()
+def read_input( file_name ):
+    input_list = list()
 
-    with open( file ) as f:
-        for line in f:
-            input.append( line.rstrip( '\n' ) )
+    with open( file_name ) as file_iter:
+        for line in file_iter:
+            input_list.append( line.rstrip( '\n' ) )
 
-    return input
+    return input_list
