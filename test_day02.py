@@ -6,17 +6,17 @@ import day02
 class TestDay02( unittest.TestCase ):
 
     def test_part1_example1( self ):
-        input = [
-                'abcdef',
-                'bababc',
-                'abbcde',
-                'abcccd',
-                'aabcdd',
-                'abcdee',
-                'ababab'
-                ]
+        input_list = [
+            'abcdef',
+            'bababc',
+            'abbcde',
+            'abcccd',
+            'aabcdd',
+            'abcdee',
+            'ababab'
+            ]
 
-        result = day02.part1( input )
+        result = day02.part1( input_list )
         self.assertEqual( result, 12 )
 
     def test_part1_input( self ):
@@ -25,17 +25,17 @@ class TestDay02( unittest.TestCase ):
 
 
     def test_part2_example1( self ):
-        input = [
-                'abcde',
-                'fghij',
-                'klmno',
-                'pqrst',
-                'fguij',
-                'axcye',
-                'wvxyz'
-                ]
+        input_list = [
+            'abcde',
+            'fghij',
+            'klmno',
+            'pqrst',
+            'fguij',
+            'axcye',
+            'wvxyz'
+            ]
 
-        result = day02.part2( input )
+        result = day02.part2( input_list )
         self.assertEqual( result, 'fgij' )
 
     def test_part2_input( self ):
