@@ -69,7 +69,7 @@ def part1( input ):
                 distanceCounts[ d ] += 1
                 distanceCoords[ d ] = coordinate
 
-            closestPair = min( distanceCounts.iteritems(), key=itemgetter(0))
+            closestPair = min( distanceCounts.items(), key=itemgetter(0))
             if ( closestPair[1] == 1 ):
                 closestCoord = distanceCoords[ closestPair[0] ]
 
@@ -85,7 +85,7 @@ def part1( input ):
         numSquaresOwnedByCoordinate.pop( coord, None )
 
     # Return the largest remaining.
-    largest = max( numSquaresOwnedByCoordinate.iteritems(), key=itemgetter(1))
+    largest = max( numSquaresOwnedByCoordinate.items(), key=itemgetter(1))
     return largest[1]
 
 
@@ -99,7 +99,7 @@ def part2( input, threshold = 10000 ):
     # that no coordinate that is more then this can be in the region because
     # the distance to the coordinate will use up all of threshold.
     ( minX, minY, maxX, maxY ) = getBound( coordinateList,
-                                           threshold / len( coordinateList ) )
+                                           threshold // len( coordinateList ) )
 
     squareCount = 0
 

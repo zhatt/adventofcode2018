@@ -53,7 +53,7 @@ def part2( input ):
     # Remove each character and perform reaction to find which removed character
     # yields the shorts polymer.
     for c in string.ascii_uppercase:
-        polymerToTest = polymer.translate( None, c + c.lower() )
+        polymerToTest = polymer.replace( c, '' ).replace( c.lower(), '' )
         reactedPolymer = reactPolymer( polymerToTest )
         shortest = min( shortest, len( reactedPolymer ) )
 
