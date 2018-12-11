@@ -2,38 +2,31 @@
 
 import aoc
 
-def part1( input ):
+def part1( input_list ):
     """
     Calculate the final frequency based on a list of changes.
     """
 
     frequency = 0
 
-    for change in input:
+    for change in input_list:
         frequency += int( change )
 
     return frequency
 
 
-def part2( input ):
+def part2( input_list ):
     """
     Find the first frequency seen first when processing changes.  You may need
     to process the input list multiple times.
     """
 
-    # Read the input into a list.
-    changes = list()
-    for change in input:
-        changes.append( int( change ) )
-
     frequency = 0
-
-    seen = set()
-    seen.add( 0 )
+    seen = { 0 }
 
     while True:
-        for change in changes:
-            frequency += change
+        for change in input_list:
+            frequency += int( change )
 
             if frequency in seen:
                 return frequency
@@ -43,4 +36,3 @@ def part2( input ):
 
 if __name__ == "__main__":
     aoc.main( part1, part2 )
-
