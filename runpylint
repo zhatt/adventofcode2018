@@ -5,7 +5,7 @@ args=(
 	--disable=missing-docstring
 )
 
-defaultFiles=*
+defaultFiles=*.py
 
 for arg in "$@"; do
 
