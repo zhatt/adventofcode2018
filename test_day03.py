@@ -6,10 +6,10 @@ import day03
 class TestDay03( unittest.TestCase ):
 
     example = [
-            '#1 @ 1,3: 4x4',
-            '#2 @ 3,1: 4x4',
-            '#3 @ 5,5: 2x2'
-            ]
+        '#1 @ 1,3: 4x4',
+        '#2 @ 3,1: 4x4',
+        '#3 @ 5,5: 2x2'
+        ]
 
     def test_part1_example1( self ):
         result = day03.part1( self.example )

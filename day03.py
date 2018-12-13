@@ -5,70 +5,73 @@ from collections import defaultdict
 
 import aoc
 
-def parseLine( line ):
+def parse_line( line ):
     """
     Parse line of this form:
     #1 @ 1,3: 4x4
     """
 
-    matchObj = re.match( r'#(\d+) @ (\d+),(\d+): (\d+)x(\d+)', line )
-    assert( matchObj )
+    match_obj = re.match( r'#(\d+) @ (\d+),(\d+): (\d+)x(\d+)', line )
+    assert match_obj
 
-    claimNumber = int( matchObj.group( 1 ) )
-    x = int( matchObj.group( 2 ) )
-    y = int( matchObj.group( 3 ) )
-    width = int( matchObj.group( 4 ) )
-    height = int( matchObj.group( 5 ) )
+    claim_number = int( match_obj.group( 1 ) )
+    x_coord = int( match_obj.group( 2 ) )
+    y_coord = int( match_obj.group( 3 ) )
+    width = int( match_obj.group( 4 ) )
+    height = int( match_obj.group( 5 ) )
 
-    return ( claimNumber, x, y, width, height )
+    return ( claim_number, x_coord, y_coord, width, height )
 
-def countSquareClaims( input ):
+def count_square_claims( input_list ):
     """
     Create a dictionary indexed by (x,y) that contains the number of claims
     on (x,y).  We use a dictionary because we don't know the size of the cloth.
     """
-    fabricClaims = defaultdict( int )
+    fabric_claims = defaultdict( int )
 
-    for line in input:
-        ( claimNumber, x, y, width, height ) = parseLine( line )
+    for line in input_list:
+        ( _, x_coord, y_coord, width, height ) = parse_line( line )
 
-        for xindex in range( x, x + width ):
-            for yindex in range( y, y + height ):
-                fabricClaims[(xindex,yindex)] += 1
+        for xindex in range( x_coord, x_coord + width ):
+            for yindex in range( y_coord, y_coord + height ):
+                fabric_claims[(xindex,yindex)] += 1
 
-    return fabricClaims
+    return fabric_claims
 
-def part1( input ):
+def part1( input_list ):
     """
     Find fabric with multple claims to the same square.
     """
 
-    fabricClaims = countSquareClaims( input )
+    fabric_claims = count_square_claims( input_list )
 
     count = 0
-    for i in fabricClaims.values():
+    for i in fabric_claims.values():
         if i > 1:
             count += 1
 
     return count
 
-def part2( input ):
+def part2( input_list ):
 
-    fabricClaims = countSquareClaims( input )
+    fabric_claims = count_square_claims( input_list )
 
-    for line in input:
-        ( claimNumber, x, y, width, height ) = parseLine( line )
+    for line in input_list:
+        ( claim_number, x_coord, y_coord, width, height ) = parse_line( line )
 
         # Check all squares in each claim.  We are looking for a claim where
         # all squares are 1 which means only this claim needs that square.
         found = True
-        for xindex in range( x, x + width ):
-            for yindex in range( y, y + height ):
-                if ( fabricClaims[(xindex,yindex)] != 1 ):
+        for xindex in range( x_coord, x_coord + width ):
+            for yindex in range( y_coord, y_coord + height ):
+                if fabric_claims[(xindex,yindex)] != 1:
                     found = False
 
         if found:
-            return claimNumber
+            return claim_number
+
+    assert False
+    return None
 
 
 if __name__ == "__main__":
