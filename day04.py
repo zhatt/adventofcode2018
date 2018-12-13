@@ -6,7 +6,7 @@ from collections import defaultdict
 
 import aoc
 
-def readData( input ):
+def read_data( input_list ):
     """
     Return dictionary indexed by guard number of histogram lists.
 
@@ -15,7 +15,7 @@ def readData( input ):
     """
 
     # ASCII sort will put the entries in time order.
-    input.sort()
+    input_list.sort()
 
     # Data looks like this.
     # [1518-10-31 23:54] Guard #409 begins shift
@@ -24,90 +24,89 @@ def readData( input ):
 
     # This are used to sanity check the input.  The guard must be awake at
     # when changing and asleep and awakes must be paired correctly.
-    isAwake = True
+    is_awake = True
 
     data = defaultdict( lambda: [0]*60 ) # Array of 0-59 minutes
 
-    for line in input:
-        matchObjG = re.search( r'Guard #(\d+) begins shift', line )
-        matchObjA = re.search( r':(\d\d)] falls asleep', line )
-        matchObjW = re.search( r':(\d\d)] wakes up', line )
+    for line in input_list:
+        match_obj_g = re.search( r'Guard #(\d+) begins shift', line )
+        match_obj_a = re.search( r':(\d\d)] falls asleep', line )
+        match_obj_w = re.search( r':(\d\d)] wakes up', line )
 
-        if matchObjG:
-            assert( isAwake )
-            guard = int( matchObjG.group( 1 ) )
+        if match_obj_g:
+            assert is_awake
+            guard = int( match_obj_g.group( 1 ) )
 
-        elif matchObjA:
-            assert( isAwake )
-            isAwake = False
+        elif match_obj_a:
+            assert is_awake
+            is_awake = False
 
-            asleepTime = int( matchObjA.group( 1 ) )
+            asleep_time = int( match_obj_a.group( 1 ) )
 
-        elif matchObjW:
-            assert( not isAwake )
-            isAwake = True
+        elif match_obj_w:
+            assert not is_awake
+            is_awake = True
 
-            wakeupTime = int( matchObjW.group( 1 ) )
+            wakeup_time = int( match_obj_w.group( 1 ) )
 
             record = data[ guard ]
-            for i in range( asleepTime, wakeupTime ):
+            for i in range( asleep_time, wakeup_time ):
                 record[ i ] += 1
 
         else:
             # Can't parse.
-            assert( 0 )
+            assert False
 
     return data
 
 
-def part1( input ):
+def part1( input_list ):
     """
     Find the guard with the most total minutes slept and report what minute
     he slept the most.
     """
 
-    guardData = readData( input )
+    guard_data = read_data( input_list )
 
-    sleepiestGuardNumber = 0
-    sleepiestGuardMinutes = 0
+    sleepiest_guard_number = 0
+    sleepiest_guard_minutes = 0
 
     # Find the that has the most minutes asleep.
-    for guard,histogram in guardData.items():
-        minutesSlept = sum( histogram )
-        if minutesSlept > sleepiestGuardMinutes:
-            sleepiestGuardMinutes = minutesSlept
-            sleepiestGuardNumber = guard
+    for guard,histogram in guard_data.items():
+        minutes_slept = sum( histogram )
+        if minutes_slept > sleepiest_guard_minutes:
+            sleepiest_guard_minutes = minutes_slept
+            sleepiest_guard_number = guard
 
     # What minute did he sleep the most?
-    minute, value = max( enumerate( guardData[sleepiestGuardNumber] ),
-                         key=operator.itemgetter( 1 ) )
+    minute, _ = max( enumerate( guard_data[sleepiest_guard_number] ),
+                     key=operator.itemgetter( 1 ) )
 
-    return sleepiestGuardNumber * minute
+    return sleepiest_guard_number * minute
 
 
-def part2( input ):
+def part2( input_list ):
     """
     Find the guard with the single most likely minute to be asleep.
     """
 
-    guardData = readData( input )
+    guard_data = read_data( input_list )
 
-    sleepiestGuardNumber = 0
-    sleepiestGuardMinutes = 0
-    sleepiestGuardMinute = 0
+    sleepiest_guard_number = 0
+    sleepiest_guard_minutes = 0
+    sleepiest_guard_minute = 0
 
     # Find the guard that has the highest sleep minute value.
-    for guard,histogram in guardData.items():
-        minute, value = max( enumerate( guardData[guard] ),
+    for guard, _ in guard_data.items():
+        minute, value = max( enumerate( guard_data[guard] ),
                              key=operator.itemgetter( 1 ) )
-        if value > sleepiestGuardMinutes:
-            sleepiestGuardMinutes = value
-            sleepiestGuardMinute = minute
-            sleepiestGuardNumber = guard
+        if value > sleepiest_guard_minutes:
+            sleepiest_guard_minutes = value
+            sleepiest_guard_minute = minute
+            sleepiest_guard_number = guard
 
-    return sleepiestGuardNumber * sleepiestGuardMinute
+    return sleepiest_guard_number * sleepiest_guard_minute
 
 
 if __name__ == "__main__":
     aoc.main( part1, part2 )
-
