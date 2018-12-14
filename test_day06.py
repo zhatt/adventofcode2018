@@ -23,10 +23,10 @@ class TestDay06( unittest.TestCase ):
         self.assertEqual( day06.distance( ( 1, 1 ), ( 1, 2 ) ), 1 )
         self.assertEqual( day06.distance( ( 1, 1 ), ( 1, 1 ) ), 0 )
 
-    def test_getBound( self ):
+    def test_get_bound( self ):
         data = ( (1, 1), (3, 5), (4, 4) )
-        self.assertEqual( day06.getBound( data, 0  ), ( 1, 1, 4, 5 ) )
-        self.assertEqual( day06.getBound( data, 2  ), ( -1, -1, 6, 7 ) )
+        self.assertEqual( day06.get_bound( data, 0  ), ( ( 1, 1 ), ( 4, 5 ) ) )
+        self.assertEqual( day06.get_bound( data, 2  ), ( ( -1, -1 ), ( 6, 7 ) ) )
 
     def test_part1_example1( self ):
         result = day06.part1( self.example )
