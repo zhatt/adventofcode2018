@@ -28,7 +28,7 @@ class TestDay05( unittest.TestCase ):
         result = day05.part1( [ 'XXXAaAaXXAa' ] )
         self.assertEqual( result, 5 )
 
-    def test_part1_4( self ):
+    def test_part1_5( self ):
         result = day05.part1( [ 'XXXAaAaXX' ] )
         self.assertEqual( result, 5 )
 
