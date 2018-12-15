@@ -1,4 +1,7 @@
 import argparse
+from collections import namedtuple
+
+Coord = namedtuple( 'Coord', [ 'x_val', 'y_val' ] )
 
 def parse_args():
     parser = argparse.ArgumentParser()

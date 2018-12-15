@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
-from collections import namedtuple
 import re
 
 import aoc
-
-Coord = namedtuple( 'Coord', [ 'x_val', 'y_val' ] )
-
+from aoc import Coord
 
 class StarData:
     def __init__( self, coord, velocity ):
