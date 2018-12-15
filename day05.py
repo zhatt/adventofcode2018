@@ -1,36 +1,34 @@
 #!/usr/bin/env python3
 
 import string
+import blist
 
 import aoc
 
 def react_polymer( polymer ):
+
+    # Convert string into list for faster deletions.
+    polymer = blist.blist( polymer )
 
     # Scan polymer and copy everything but reactive pairs to next_polymer for
     # next interation.  Keep iterating until no reactive pairs are found.
     done = False
     while not done:
         done = True
-        next_polymer = ''
 
         i = 0
         while i <= len( polymer ) - 2:
             if polymer[i] != polymer[i+1] and polymer[i].lower() == polymer[i+1].lower():
                 # Drop reactive pair.
-                i += 2
+                polymer.pop( i )
+                polymer.pop( i )
+                # Next iteration will be at the same index
                 done = False
             else:
-                # Copy character that is not part of reactive pair.
-                next_polymer += polymer[i]
                 i += 1
 
-        # The last character was not destroyed so copy it.
-        if i < len( polymer ):
-            next_polymer += polymer[i]
-
-        polymer = next_polymer
-
     return polymer
+
 
 def part1( input_list ):
     """
