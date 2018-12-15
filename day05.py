@@ -45,7 +45,7 @@ def part1( input_list ):
 
 def part2( input_list ):
     """
-    Find smalled reacted polymer obtained when removing each character.
+    Find smallest reacted polymer obtained when removing each character.
     """
     polymer = input_list[ 0 ]
 
