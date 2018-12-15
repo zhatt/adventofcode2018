@@ -69,7 +69,6 @@ class TestDay10( unittest.TestCase ):
         result = day10.part1( self.example )
         self.assertEqual( result, '\n'.join( self.example_solution ) )
 
-    @unittest.skip('dev')
     def test_part1_input( self ):
         result = day10.part1( aoc.read_input( 'day10.input' ) )
         self.assertEqual( result, '\n'.join( self.input_solution ) )
@@ -78,7 +77,6 @@ class TestDay10( unittest.TestCase ):
         result = day10.part2( self.example )
         self.assertEqual( result, 3 )
 
-    @unittest.skip('dev')
     def test_part2_input( self ):
         result = day10.part2( aoc.read_input( 'day10.input' ) )
         self.assertEqual( result, 10886 )
