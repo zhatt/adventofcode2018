@@ -12,20 +12,20 @@ def react_polymer( polymer ):
 
     # Scan polymer and copy everything but reactive pairs to next_polymer for
     # next interation.  Keep iterating until no reactive pairs are found.
-    done = False
-    while not done:
-        done = True
 
-        i = 0
-        while i <= len( polymer ) - 2:
-            if polymer[i] != polymer[i+1] and polymer[i].lower() == polymer[i+1].lower():
-                # Drop reactive pair.
-                polymer.pop( i )
-                polymer.pop( i )
-                # Next iteration will be at the same index
-                done = False
-            else:
-                i += 1
+    i = 0
+    while i <= len( polymer ) - 2:
+        if polymer[i] != polymer[i+1] and polymer[i].lower() == polymer[i+1].lower():
+            # Drop reactive pair.
+            polymer.pop( i )
+            polymer.pop( i )
+            # Next iteration will be at previous index because i and i-1
+            # might be reactive now.
+            if i:
+                i -= 1
+
+        else:
+            i += 1
 
     return polymer
 
