@@ -1,107 +1,12 @@
 #!/usr/bin/env python3
 
+from collections import namedtuple
 import re
 
 import aoc
+from time_computer import TimeComputer
 
-class Computer:
-
-    def __init__(self, registers):
-        self._registers = registers
-
-    def get_registers(self):
-        return tuple(self._registers)
-
-    def execute_as(self, operation, instruction):
-        self.ops_by_name[operation](self, instruction)
-
-    def execute(self, instruction):
-        self.ops_by_number[instruction[0]](self, instruction)
-
-    ops_by_name = dict()
-
-    def op_addr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] + \
-                                          self._registers[instruction[2]]
-    ops_by_name['addr'] = op_addr
-
-    def op_addi(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] + \
-                                          instruction[2]
-    ops_by_name['addi'] = op_addi
-
-    def op_mulr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] * \
-                                          self._registers[instruction[2]]
-    ops_by_name['mulr'] = op_mulr
-
-    def op_muli(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] * \
-                                          instruction[2]
-    ops_by_name['muli'] = op_muli
-
-    def op_banr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] & \
-                                          self._registers[instruction[2]]
-    ops_by_name['banr'] = op_banr
-
-    def op_bani(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] & \
-                                          instruction[2]
-    ops_by_name['bani'] = op_bani
-
-    def op_borr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] | \
-                                          self._registers[instruction[2]]
-    ops_by_name['borr'] = op_borr
-
-    def op_bori(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] | \
-                                          instruction[2]
-    ops_by_name['bori'] = op_bori
-
-    def op_setr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]]
-    ops_by_name['setr'] = op_setr
-
-    def op_seti(self, instruction):
-        self._registers[instruction[3]] = instruction[1]
-    ops_by_name['seti'] = op_seti
-
-    def op_gtir(self, instruction):
-        self._registers[instruction[3]] = 1 if instruction[1] > \
-                                               self._registers[instruction[2]] else 0
-    ops_by_name['gtir'] = op_gtir
-
-    def op_gtri(self, instruction):
-        self._registers[instruction[3]] = 1 if self._registers[instruction[1]] > \
-                                               instruction[2] else 0
-    ops_by_name['gtri'] = op_gtri
-
-    def op_gtrr(self, instruction):
-        self._registers[instruction[3]] = 1 if self._registers[instruction[1]] > \
-                                               self._registers[instruction[2]] else 0
-    ops_by_name['gtrr'] = op_gtrr
-
-    def op_eqir(self, instruction):
-        self._registers[instruction[3]] = 1 if instruction[1] == \
-                                               self._registers[instruction[2]] else 0
-    ops_by_name['eqir'] = op_eqir
-
-    def op_eqri(self, instruction):
-        self._registers[instruction[3]] = 1 if self._registers[instruction[1]] \
-                                               == instruction[2] else 0
-    ops_by_name['eqri'] = op_eqri
-
-    def op_eqrr(self, instruction):
-        self._registers[instruction[3]] = 1 if self._registers[instruction[1]] \
-                                               == self._registers[instruction[2]] else 0
-    ops_by_name['eqrr'] = op_eqrr
-
-    ops_by_number = list( [None] * len(ops_by_name))
-
-    def set_op_number(self, op_name, op_number):
-        self.ops_by_number[op_number] = self.ops_by_name[op_name]
+Sample = namedtuple('Sample', ['registers_before', 'instruction', 'registers_after'])
 
 def parse_input(input_list):
     samples = set()
@@ -135,7 +40,8 @@ def parse_input(input_list):
         if match:
             after = (int(match.group(1)), int(match.group(2)), int(match.group(3)),
                      int(match.group(4)))
-            sample = (before, instruction, after)
+            sample =  Sample(registers_before=before, instruction=instruction,
+                             registers_after=after)
             samples.add(sample)
 
             before = None
@@ -146,13 +52,21 @@ def parse_input(input_list):
 
     return samples, program
 
-def what_many_opcodes_match(sample, opcodes=Computer.ops_by_name):
+def how_many_opcodes_match(sample, opcodes=None):
+
+    if opcodes is None:
+        opcodes = TimeComputer.get_opcodes()
+
     matches = set()
     for opcode in opcodes:
-        regs = list(sample[0])
-        computer = Computer(regs)
-        computer.execute_as(opcode, sample[1])
-        if sample[2] == computer.get_registers():
+        regs = list(sample.registers_before)
+        instruction = '%s %d %d %d' % (opcode, sample.instruction[1], sample.instruction[2],
+                                       sample.instruction[3])
+        program = [instruction]
+        computer = TimeComputer(program, regs)
+        computer.step()
+
+        if sample.registers_after == computer.get_registers():
             matches.add(opcode)
     return matches
 
@@ -161,7 +75,7 @@ def part1(input_list):
     three_or_more_count = 0
     samples, _ = parse_input(input_list)
     for sample in samples:
-        matches = what_many_opcodes_match(sample)
+        matches = how_many_opcodes_match(sample)
 
         if len(matches) >= 3:
             three_or_more_count += 1
@@ -169,20 +83,23 @@ def part1(input_list):
 
 
 def part2(input_list):
-    registers = list((0,0,0,0))
-    computer = Computer(registers)
+    samples, program_with_opnums = parse_input(input_list)
 
-    remaining_opcodes = set(Computer.ops_by_name)
-    samples, program = parse_input(input_list)
+    opcode_map = dict()
 
+    remaining_opcodes = set(TimeComputer.get_opcodes())
+
+    # Figure out the opcode number to name mapping by running the samples on every
+    # opcode that we haven't yet mapped.  Each iteration should map one number to
+    # an opcode.
     while remaining_opcodes:
         opcode_number = None
         for sample in samples:
-            matches = what_many_opcodes_match(sample, remaining_opcodes)
+            matches = how_many_opcodes_match(sample, remaining_opcodes)
             if len(matches) == 1:
-                opcode_number = sample[1][0]
+                opcode_number = sample.instruction[0]
                 opcode_name = matches.pop()
-                computer.set_op_number(opcode_name, opcode_number)
+                opcode_map[opcode_number] = opcode_name
                 remaining_opcodes.remove(opcode_name)
                 break
 
@@ -190,17 +107,22 @@ def part2(input_list):
         if opcode_number is not None:
             samples_to_delete = set()
             for sample in samples:
-                if sample[1][0] == opcode_number:
+                if sample.instruction[0] == opcode_number:
                     samples_to_delete.add(sample)
 
             samples -= samples_to_delete
 
+    # Remap opcode numbers to name in the program.
+    program = []
+    for instruction in program_with_opnums:
+        instruction_text = '%s %d %d %d' % (opcode_map[instruction[0]], instruction[1],
+                                            instruction[2], instruction[3])
+        program.append(instruction_text)
 
-    for instruction in program:
-        computer.execute(instruction)
+    computer = TimeComputer(program)
+    computer.run()
 
     registers = computer.get_registers()
-
     return registers[0]
 
 

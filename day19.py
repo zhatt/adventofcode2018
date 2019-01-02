@@ -1,150 +1,11 @@
 #!/usr/bin/env python3
 
-import re
-
 import aoc
-
-class Computer:
-
-    def __init__(self, input_list, registers=None):
-        self._registers = registers if registers else [0, 0, 0, 0, 0, 0]
-        assert len(self._registers) == 6
-        self._program = list()
-        self._ip = 0
-        self._halted = False
-
-        self.load_program(input_list)
-
-    def get_registers(self):
-        return tuple(self._registers)
-
-    def get_ip(self):
-        return self._registers[self._ip]
-
-    def _inc_ip(self):
-        if 0 <= self._registers[self._ip] + 1 < len(self._program):
-            self._registers[self._ip] += 1
-        else:
-            self._halted = True
-
-    def _execute(self, instruction):
-        self.ops_by_name[instruction[0]](self, instruction)
-
-    ops_by_name = dict()
-
-    def _op_addr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] + \
-                                          self._registers[instruction[2]]
-    ops_by_name['addr'] = _op_addr
-
-    def _op_addi(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] + \
-                                          instruction[2]
-    ops_by_name['addi'] = _op_addi
-
-    def _op_mulr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] * \
-                                          self._registers[instruction[2]]
-    ops_by_name['mulr'] = _op_mulr
-
-    def _op_muli(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] * \
-                                          instruction[2]
-    ops_by_name['muli'] = _op_muli
-
-    def _op_banr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] & \
-                                          self._registers[instruction[2]]
-    ops_by_name['banr'] = _op_banr
-
-    def _op_bani(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] & \
-                                          instruction[2]
-    ops_by_name['bani'] = _op_bani
-
-    def _op_borr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] | \
-                                          self._registers[instruction[2]]
-    ops_by_name['borr'] = _op_borr
-
-    def _op_bori(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]] | \
-                                          instruction[2]
-    ops_by_name['bori'] = _op_bori
-
-    def _op_setr(self, instruction):
-        self._registers[instruction[3]] = self._registers[instruction[1]]
-    ops_by_name['setr'] = _op_setr
-
-    def _op_seti(self, instruction):
-        self._registers[instruction[3]] = instruction[1]
-    ops_by_name['seti'] = _op_seti
-
-    def _op_gtir(self, instruction):
-        self._registers[instruction[3]] = 1 if instruction[1] > \
-                                               self._registers[instruction[2]] else 0
-    ops_by_name['gtir'] = _op_gtir
-
-    def _op_gtri(self, instruction):
-        self._registers[instruction[3]] = 1 if self._registers[instruction[1]] > \
-                                               instruction[2] else 0
-    ops_by_name['gtri'] = _op_gtri
-
-    def _op_gtrr(self, instruction):
-        self._registers[instruction[3]] = 1 if self._registers[instruction[1]] > \
-                                               self._registers[instruction[2]] else 0
-    ops_by_name['gtrr'] = _op_gtrr
-
-    def _op_eqir(self, instruction):
-        self._registers[instruction[3]] = 1 if instruction[1] == \
-                                               self._registers[instruction[2]] else 0
-    ops_by_name['eqir'] = _op_eqir
-
-    def _op_eqri(self, instruction):
-        self._registers[instruction[3]] = 1 if self._registers[instruction[1]] \
-                                               == instruction[2] else 0
-    ops_by_name['eqri'] = _op_eqri
-
-    def _op_eqrr(self, instruction):
-        self._registers[instruction[3]] = 1 if self._registers[instruction[1]] \
-                                               == self._registers[instruction[2]] else 0
-    ops_by_name['eqrr'] = _op_eqrr
-
-    def load_program(self, input_list):
-        self._program = list()
-
-        re_ip = re.compile(r'#ip (\d+)')
-        re_instruction = re.compile(r'(\D+) (\d+) (\d+) (\d+)')
-
-
-        for line in input_list:
-            match = re_ip.fullmatch(line)
-            if match:
-                self._ip = int(match.group(1))
-                continue
-
-            match = re_instruction.fullmatch(line)
-            if match:
-                self._program.append((match.group(1), int(match.group(2)),
-                                      int(match.group(3)), int(match.group(4))))
-                continue
-
-            assert False
-
-
-    def step(self):
-        ip_value = self.get_ip()
-        self._execute(self._program[ip_value])
-        self._inc_ip()
-
-    def run(self):
-        self._halted = False
-        while not self._halted:
-            self.step()
+from time_computer import TimeComputer
 
 
 def part1(input_list):
-    computer = Computer(input_list)
+    computer = TimeComputer(input_list)
     computer.run()
     registers = computer.get_registers()
     return registers[0]
@@ -242,7 +103,7 @@ def main_loop_simulator(reg5):
 
 def part2(input_list):
     registers = [1,0,0,0,0,0]
-    computer = Computer(input_list, registers)
+    computer = TimeComputer(input_list, registers)
 
     # Simulate until reg5 initialization is completed.
     while computer.get_ip() != 1:
