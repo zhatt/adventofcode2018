@@ -20,11 +20,21 @@ class TimeComputer:
     def get_registers(self):
         return tuple(self._registers)
 
+    def get_registers_reference(self):
+        """
+        Get a reference to the register list.  This should not normally be used.
+        It can be used to modify the registers when hacking.
+        """
+        return self._registers
+
     def get_ip(self):
         return self._ip_registers[self._ip_register_number]
 
     def set_ip(self, new_ip):
         self._ip_registers[self._ip_register_number] = new_ip
+
+    def is_halted(self):
+        return self._halted
 
     def _inc_ip(self):
         ip_value = self.get_ip()
@@ -139,10 +149,14 @@ class TimeComputer:
             assert False
 
 
-    def step(self):
-        ip_value = self.get_ip()
-        self._execute(self._program[ip_value])
-        self._inc_ip()
+    def step(self, max_steps=1):
+        for _ in range(max_steps):
+            if self._halted:
+                break
+
+            ip_value = self.get_ip()
+            self._execute(self._program[ip_value])
+            self._inc_ip()
 
     def run(self):
         self._halted = False
