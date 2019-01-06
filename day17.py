@@ -106,9 +106,15 @@ class GroundMap:
         return True
 
     def _can_add_water_below(self, coord, side):
+        # I have switched this function to use plain tuples instead of Coord to
+        # cut the runtime in half.
+        #
+        # It turns out that named Tuples are quite expensive.
+        # https://lwn.net/Articles/731423/
+
         assert self._ground_map.get(coord) is None
         assert coord.y_val == self._max_coord.y_val or \
-               self._ground_map.get(Coord(coord.x_val, coord.y_val + 1)) is not None
+               self._ground_map.get((coord[0], coord[1] + 1)) is not None
 
         if side == 'left':
             increment = -1
@@ -117,13 +123,17 @@ class GroundMap:
         else:
             assert False
 
-        current_coord = coord
         while True:
-            next_coord = Coord(current_coord.x_val + increment, current_coord.y_val)
-            next_coord_below = Coord(current_coord.x_val + increment, current_coord.y_val + 1)
-            if next_coord in self._ground_map:
+            # If there is already water or wall to the 'side' we are checking
+            # at this level then we can't add water below.
+            coord = (coord[0] + increment, coord[1])
+            if coord in self._ground_map:
                 return False
 
+            # If there is nothing below the next coordinate then we can add
+            # water.  If there is resting or a wall below then we will
+            # continue to search the next coordinate.
+            next_coord_below = (coord[0], coord[1] + 1)
             content_below = self._ground_map.get(next_coord_below)
             if content_below is None:
                 return True
@@ -131,8 +141,8 @@ class GroundMap:
             if content_below == '|':
                 return False
 
-            # Keep moving and checking.
-            current_coord = next_coord
+            # There is resting water or a wall below loop to check the next
+            # location.
 
 
     def add_some_water(self):
