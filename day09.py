@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import re
-from blist import blist
+from chunklist import ChunkList
 
 import aoc
 
@@ -23,8 +23,10 @@ def parse_input( input_list ):
 def simulate( num_players, last_marble ):
     score_list = [ 0 ] * num_players
 
-    # Use blist because we do insertion on large list.
-    marbles = blist( [ 0 ] )
+    # Use ChunkList because we do insertion on large list.
+    marbles = ChunkList()
+    marbles.append(0)
+
     current_marble = 0
     current_player = 0
 

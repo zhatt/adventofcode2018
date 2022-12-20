@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 import string
-import blist
 
 import aoc
 
 def react_polymer( polymer ):
 
     # Convert string into list for faster deletions.
-    polymer = blist.blist( polymer )
+    polymer = list( polymer )
 
     # Scan polymer and copy everything but reactive pairs to next_polymer for
     # next interation.  Keep iterating until no reactive pairs are found.
